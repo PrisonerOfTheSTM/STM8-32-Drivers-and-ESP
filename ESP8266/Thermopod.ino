@@ -553,8 +553,7 @@ void handleMainPage() {
         <h1> Мониторинг и управление</h1>
   
         <div class="card card-temp">
-        <div class="label">
-          Температура</div>
+        <div class="label"> Температура</div>
         <div class="value">
           <span id="tempValue">--.-</span>
           <span class="unit">°C</span>
@@ -601,101 +600,94 @@ void handleMainPage() {
         </div>
         </div>
         <script>
-        function updateData() {
-        fetch('/data')
-        .then(response => response.json())
-        .then(data => {
-        if (data.tempError) {
-          document.getElementById('temp Value').innerHTML = '--';
-          document.getElementById('temp Error').innerHTML = ' ' + data.tempError;
-        } 
-        else {
-          document.getElementById('temp Value').innerHTML = data.temp.toFixed(1);
-          document.getElementById('temp Error').innerHTML = '';
-        }
-        if (data.weightError) {
-        
-          document.getElementById('weig
-          htError').innerHTML = ' ' + data.weightError;
-        } 
-        else if (data.weight !== null) {
-          document.getElementById('weig
-          htValue').innerHTML = data.weight.toFixed(1);
-          document.getElementById('weig
-          htError').innerHTML = '';
-        }
-        if (data.volume !== null) {
-          document.getElementById('volu
-          meValue').innerHTML = data.volume.toFixed(3);
-        }
-        // Обновляем статус
-        let status = 'Ожидание';
-        if (data.emergencyStop) {
-          status = ' Аварийная остановка';
-        } 
-        else if (data.isFilling && data.isHeating) {
-          status = ' Заполнение и нагрев...';
-        } 
-        else if (data.isFilling) {
-          status = ' Заполнение...';
-        } 
-        else if (data.isHeating) {
-          status = ' Нагрев...';
-        }
-        document.getElementById('statusText').innerHTML = status;
-        })
-        .catch(() => {
-          document.getElementById('tempError').innerHTML = ' Ошибка соединения';
-        });
-        }
-        function startProcess() {
-          const volume = parseFloat(document.getElementById('targetVolume').value);
-          const temp = parseFloat(document.getElementById('targetTemp').value);
-        if (volume < 2.0 || volume > 3.0) {
-        alert('Объем должен быть от 2.0 до
-        3.0 литров!');
-        return;
-        }
-        if (temp < 20 || temp > 80) {
-        alert('Температура должна быть от
-        20 до 80°C!');
-        return;
-        }
-        fetch('/setTarget?volume=' + volume +
-        '&temp=' + temp)
-        .then(response => response.text())
-        .then(data => {
-        if (data === 'OK') {
-        alert('Процесс запущен!');
-        } else {
-        alert('Ошибка: ' + data);
-        }
-        });
-        }
-        function emergencyStop() {
-        if (confirm('Вы уверены, что хотите
-        выполнить экстренную остановку? Все пины будут
-        сброшены в 0.')) {
-        fetch('/emergencyStop')
-        .then(response => response.text())
-        .then(data => {
-        alert(data);
-        });
-        }
-        155
-        }
-        function resetSettings() {
-        if (confirm('Сбросить все настройки
-        WiFi?')) {
-        fetch('/reset').then(() => {
-        alert('Настройки сброшены!');
-        setTimeout(() => location.reload(),
-        2000);
-        });
-        }
-        }
-        updateData();
-        setInterval(updateData, 1000);
+          function updateData() {
+            fetch('/data')
+            .then(response => response.json())
+            .then(data => {
+              if (data.tempError) {
+                document.getElementById('temp Value').innerHTML = '--';
+                document.getElementById('temp Error').innerHTML = ' ' + data.tempError;
+              } 
+              else {
+                document.getElementById('temp Value').innerHTML = data.temp.toFixed(1);
+                document.getElementById('temp Error').innerHTML = '';
+              }
+              if (data.weightError) {
+                document.getElementById('weig
+                htError').innerHTML = ' ' + data.weightError;
+              } 
+              else if (data.weight !== null) {
+                document.getElementById('weig
+                htValue').innerHTML = data.weight.toFixed(1);
+                document.getElementById('weig
+                htError').innerHTML = '';
+              }
+              if (data.volume !== null) {
+                document.getElementById('volu
+                meValue').innerHTML = data.volume.toFixed(3);
+              }
+              // Обновляем статус
+              let status = 'Ожидание';
+              if (data.emergencyStop) {
+                status = ' Аварийная остановка';
+              } 
+              else if (data.isFilling && data.isHeating) {
+                status = ' Заполнение и нагрев...';
+              } 
+              else if (data.isFilling) {
+                status = ' Заполнение...';
+              } 
+              else if (data.isHeating) {
+                status = ' Нагрев...';
+              }
+              document.getElementById('statusText').innerHTML = status;
+            })
+            .catch(() => {
+              document.getElementById('tempError').innerHTML = ' Ошибка соединения';
+            });
+          }
+          function startProcess() {
+            const volume = parseFloat(document.getElementById('targetVolume').value);
+            const temp = parseFloat(document.getElementById('targetTemp').value);
+            if (volume < 2.0 || volume > 3.0) {
+              alert('Объем должен быть от 2.0 до 3.0 литров!');
+              return;
+            }
+            if (temp < 20 || temp > 80) {
+              alert('Температура должна быть от 20 до 80°C!');
+              return;
+            }
+            fetch('/setTarget?volume=' + volume + '&temp=' + temp)
+            .then(response => response.text())
+            .then(data => {
+              if (data === 'OK') {
+                alert('Процесс запущен!');
+              } 
+              else {
+                alert('Ошибка: ' + data);
+              }
+            });
+          }
+          function emergencyStop() {
+            if (confirm('Вы уверены, что хотите выполнить экстренную остановку? Все пины будут сброшены в 0.')) {
+              fetch('/emergencyStop')
+              .then(response => response.text())
+              .then(data => {
+                alert(data);
+              });
+            }
+          }
+          function resetSettings() {
+            if (confirm('Сбросить все настройки
+            WiFi?')) {
+              fetch('/reset').then(() => {
+                alert('Настройки сброшены!');
+                setTimeout(() => location.reload(), 2000);
+              });
+            }
+          }
+          updateData();
+          setInterval(updateData, 1000);
         </script>
       </body>
     </html>
@@ -704,84 +696,81 @@ void handleMainPage() {
 }
 
 void handleData() {
-String json = "{";
-json += "\"temp\":" + String(currentTemp) +
-",";
-json += "\"tempError\":\"" + tempError + "\",";
-json += "\"weight\":" + String(currentWeight) +
-",";
-json += "\"weightError\":\"" + weightError +
-"\",";
-json += "\"volume\":" + String(currentVolume)
-+ ",";
-json += "\"isFilling\":" + String(isFilling ?
-"true" : "false") + ",";
-json += "\"isHeating\":" + String(isHeating ?
-"true" : "false") + ",";
-json += "\"emergencyStop\":" +
-String(emergencyStop ? "true" : "false") + ",";
-json += "\"targetVolume\":" +
-String(targetVolume) + ",";
-json += "\"targetTemp\":" +
-String(targetTemp);
-json += "}";
-server.send(200, "application/json", json);
+  String json = "{";
+  
+  json += "\"temp\":" + String(currentTemp) + ",";
+  json += "\"tempError\":\"" + tempError + "\",";
+  json += "\"weight\":" + String(currentWeight) + ",";
+  json += "\"weightError\":\"" + weightError + "\",";
+  json += "\"volume\":" + String(currentVolume) + ",";
+  json += "\"isFilling\":" + String(isFilling ? "true" : "false") + ",";
+  json += "\"isHeating\":" + String(isHeating ? "true" : "false") + ",";
+  json += "\"emergencyStop\":" + String(emergencyStop ? "true" : "false") + ",";
+  json += "\"targetVolume\":" + String(targetVolume) + ",";
+  json += "\"targetTemp\":" + String(targetTemp);
+  json += "}";
+  
+  server.send(200, "application/json", json);
 }
+
 void handleSetTarget() {
-if (server.hasArg("volume") &&
-server.hasArg("temp")) {
-float volume = server.arg("volume").toFloat();
-float temp = server.arg("temp").toFloat();
-// Проверка диапазонов
-if (volume < 2.0 || volume > 3.0) {
-server.send(400, "text/plain", "Объем
-должен быть от 2.0 до 3.0 литров");
-return;
+  if (server.hasArg("volume") && server.hasArg("temp")) {
+    float volume = server.arg("volume").toFloat();
+    float temp = server.arg("temp").toFloat();
+    
+    // Проверка диапазонов
+    if (volume < 2.0 || volume > 3.0) {
+      server.send(400, "text/plain", "Объем должен быть от 2.0 до 3.0 литров");
+      return;
+    }
+    
+    if (temp < 20 || temp > 80) {
+      server.send(400, "text/plain", "Температура должна быть от 20 до 80°C");
+      return;
+    }
+    
+    targetVolume = volume;
+    targetTemp = temp;
+    emergencyStop = false;
+    
+    startFilling();
+    server.send(200, "text/plain", "OK");
+  } 
+  else {
+    server.send(400, "text/plain", "Отсутствуют параметры");
+  }
 }
-if (temp < 20 || temp > 80) {
-server.send(400, "text/plain", "Температура
-должна быть от 20 до 80°C");
-return;
-}
-targetVolume = volume;
-targetTemp = temp;
-emergencyStop = false;
-startFilling();
-server.send(200, "text/plain", "OK");
-} else {
-server.send(400, "text/plain", "Отсутствуют
-параметры");
-}
-}
+
 void handleEmergencyStop() {
-emergencyShutdown();
-server.send(200, "text/plain", "Экстренная
-остановка! D1 и D0 сброшены в 0");
-156
+  emergencyShutdown();
+  server.send(200, "text/plain", "Экстренная
+  остановка! D1 и D0 сброшены в 0");
 }
+
 void handleReset() {
-config.isValid = false;
-saveConfig();
-server.send(200, "text/plain", "OK");
-delay(500);
-ESP.restart();
+  config.isValid = false;
+  saveConfig();
+  server.send(200, "text/plain", "OK");
+  delay(500);
+  ESP.restart();
 }
-// ========== РАБОТА С EEPROM
-==========
+
+// ========== РАБОТА С EEPROM ==========
 void saveConfig() {
-EEPROM.put(0, config);
-EEPROM.commit();
-Serial.println("Настройки сохранены в
-EEPROM");
+  EEPROM.put(0, config);
+  EEPROM.commit();
+  Serial.println("Настройки сохранены в EEPROM");
 }
+
 void loadConfig() {
-EEPROM.get(0, config);
-if (config.isValid) {
-Serial.println("Настройки загружены из
-EEPROM");
-Serial.print("SSID: ");
-Serial.println(config.ssid);
-} else {
-Serial.println("EEPROM пуст");
-}
+  EEPROM.get(0, config);
+  if (config.isValid) {
+    Serial.println("Настройки загружены из
+    EEPROM");
+    Serial.print("SSID: ");
+    Serial.println(config.ssid);
+  } 
+  else {
+    Serial.println("EEPROM пуст");
+  }
 }
